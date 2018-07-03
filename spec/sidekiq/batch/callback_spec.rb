@@ -13,11 +13,6 @@ describe Sidekiq::Batch::Callback::Worker do
       subject.perform('SampleCallback', 'ups', {}, 'ABCD', 'EFGH')
     end
 
-    it 'creates instance when class and event' do
-      expect(SampleCallback).to receive(:new)
-      subject.perform('SampleCallback', 'success', {}, 'ABCD', 'EFGH')
-    end
-
     it 'calls on_success if defined' do
       callback_instance = double('SampleCallback')
       expect(SampleCallback).to receive(:new).and_return(callback_instance)
