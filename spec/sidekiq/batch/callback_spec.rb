@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe Sidekiq::Batch::Callback::Worker do
   describe '#perform' do
-    it 'does not do anything if it cannot find the callback class' do
-      subject.perform('SampleCallback', 'complete', {}, 'ABCD', 'EFGH')
+    it 'raises an error if it cannot find the callback class' do
+      expect do
+        subject.perform('SampleCallback', 'complete', {}, 'ABCD', 'EFGH')
+      end.to raise_error(NoMethodError)
     end
 
     it 'does not do anything if event is different from complete or success' do
