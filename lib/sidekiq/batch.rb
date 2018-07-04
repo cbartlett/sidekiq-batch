@@ -88,8 +88,6 @@ module Sidekiq
               r.expire("BID-#{parent_bid}", BID_EXPIRE_TTL)
             end
 
-            r.hincrby(@bidkey, "pending", @ready_to_queue.size)
-            r.hincrby(@bidkey, "total", @ready_to_queue.size)
             r.expire(@bidkey, BID_EXPIRE_TTL)
 
             r.sadd(@bidkey + "-jids", @ready_to_queue)
@@ -104,6 +102,12 @@ module Sidekiq
     end
 
     def increment_job_queue(jid)
+      Sidekiq.redis do |r|
+        r.multi do |r|
+          r.hincrby(@bidkey, "pending", 1)
+          r.hincrby(@bidkey, "total", 1)
+        end
+      end
       @ready_to_queue << jid
     end
 
