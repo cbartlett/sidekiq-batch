@@ -1,0 +1,42 @@
+<header class="row">
+  <div class="col-sm-5">
+    <h3><%= t('Batches') %></h3>
+  </div>
+</header>
+
+<% if @batches.any? %>
+  <div class="table_container">
+    <table class="queues table table-hover table-bordered table-striped table-white">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Description</th>
+          <th style="width: 10%;">Total</th>
+          <th style="width: 10%;">Pending</th>
+          <th style="width: 10%;">Failures</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody>
+  <% @batches.each do |batch| %>
+    <tr>
+      <td style="width: 30%;"><%= batch.description %></td>
+      <td style="width: 10%;"><%= batch.total %></td>
+      <td style="width: 10%;"><%= batch.pending %></td>
+      <td style="width: 10%;"><%= batch.failures %></td>
+      <td>
+        <div class="progress">
+          <div class="progress-bar progress-bar-success" style="width: <%= (batch.successes.to_f / batch.total) * 100 %>%">
+            <span class="sr-only"><%= batch.successes %>successful jobs</span>
+          </div>
+          <div class="progress-bar progress-bar-danger" style="width: <%= (batch.failures.to_f / batch.total) * 100 %>%">
+            <span class="sr-only"><%= batch.failures %>failed jobs</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+    </tbody></table>
+  </div>
+<% else %>
+  <div class="alert alert-success"><%= t('NoCurrentBatches') %></div>
+<% end %>

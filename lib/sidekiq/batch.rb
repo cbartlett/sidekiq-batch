@@ -1,9 +1,11 @@
 require 'securerandom'
 require 'sidekiq'
+require "sidekiq/web" rescue LoadError
 
 require 'sidekiq/batch/callback'
 require 'sidekiq/batch/middleware'
 require 'sidekiq/batch/status'
+require 'sidekiq/batch/web_extension'
 require 'sidekiq/batch/version'
 
 module Sidekiq
@@ -219,4 +221,10 @@ module Sidekiq
       end
     end
   end
+end
+
+if defined?(Sidekiq::Web)
+  Sidekiq::Web.register Sidekiq::Batch::WebExtension
+  Sidekiq::Web.tabs["Batches"] = "batches"
+  Sidekiq::Web.settings.locales << File.join(File.dirname(__FILE__), "batch/locales")
 end

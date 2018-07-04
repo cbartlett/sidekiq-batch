@@ -11,6 +11,10 @@ module Sidekiq
         raise "Not supported"
       end
 
+      def description
+        Sidekiq.redis { |r| r.hget("BID-#{bid}", 'description') }
+      end
+
       def pending
         Sidekiq.redis { |r| r.hget("BID-#{bid}", 'pending') }.to_i
       end
@@ -43,8 +47,14 @@ module Sidekiq
         Sidekiq.redis { |r| r.hget("BID-#{bid}", 'children') }.to_i
       end
 
+      def successes
+        total - pending - failures
+      end
+
       def data
         {
+          description: description,
+          successes: successes,
           total: total,
           failures: failures,
           pending: pending,
